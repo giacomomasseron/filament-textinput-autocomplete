@@ -1,0 +1,11 @@
+{
+    "name": "filament-textinput-autocomplete",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "build": "node bin/build.js"
+    },
+    "devDependencies": {
+        "esbuild": "^0.23.0"
+    }
+}
