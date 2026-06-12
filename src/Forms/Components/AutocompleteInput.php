@@ -167,6 +167,28 @@ class AutocompleteInput extends Field
         return $this->evaluate($this->loadingMessage);
     }
 
+    public function getOptionsForJs(): array
+    {
+        $options = $this->getOptions() ?? [];
+
+        return array_map(fn (array $item) => $this->mapItem($item), $options);
+    }
+
+    protected function mapItem(array $item): array
+    {
+        $searchable = array_map(
+            fn (string $key) => mb_strtolower((string) ($item[$key] ?? '')),
+            $this->getSearchKeys(),
+        );
+
+        return [
+            'value' => $item[$this->getOptionValue()] ?? null,
+            'label' => (string) ($item[$this->getOptionLabel()] ?? ''),
+            'html' => $this->renderItem($item),
+            'keys' => array_values($searchable),
+        ];
+    }
+
     protected function renderItem(array $item): string
     {
         $itemView = $this->itemView;
