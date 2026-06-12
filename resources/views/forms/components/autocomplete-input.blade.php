@@ -9,7 +9,7 @@
 >
     <div
         x-load
-        x-load-src="@js(\Filament\Support\Facades\FilamentAsset::getAlpineComponentSrc('autocomplete', 'giacomo/filament-textinput-autocomplete'))"
+        x-load-src="@js(\Filament\Support\Facades\FilamentAsset::getAlpineComponentSrc('autocomplete', \Giacomo\TextInputAutocomplete\TextInputAutocompleteServiceProvider::$assetPackageName))"
         x-data="autocomplete({
             state: $wire.$entangle('{{ $statePath }}'),
             componentKey: @js($key),
