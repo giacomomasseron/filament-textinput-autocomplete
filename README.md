@@ -91,6 +91,23 @@ If `itemView()` is not set, the item's `optionLabel` value is shown as escaped t
 `options()` and `getSearchResultsUsing()` are mutually exclusive — setting both throws an
 `InvalidArgumentException`. `maxResults` must be at least 1.
 
+## Styling
+
+The field ships with a self-contained default style (a light input with a `#667eea` focus
+accent and a shadowed dropdown) so it looks consistent out of the box without depending on
+your panel's theme. The styles are scoped to these classes:
+
+| Class | Element |
+|---|---|
+| `.fi-ac-wrapper` | The relative-positioned container |
+| `.fi-ac-input` | The text input |
+| `.fi-ac-dropdown` | The suggestions dropdown |
+| `.fi-ac-item` | A single suggestion (active row: `.fi-ac-item--active`) |
+| `.fi-ac-empty` | Loading / no-results text (error row: `.fi-ac-empty--error`) |
+
+To restyle, override any of these classes in your own stylesheet. Markup inside each
+suggestion is whatever your `itemView()` returns, so you control that completely.
+
 ## Development
 
 ```bash
