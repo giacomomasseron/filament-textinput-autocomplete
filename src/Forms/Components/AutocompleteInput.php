@@ -4,6 +4,8 @@ namespace Giacomo\TextInputAutocomplete\Forms\Components;
 
 use Closure;
 use Filament\Forms\Components\Field;
+use Filament\Support\Components\Attributes\ExposedLivewireMethod;
+use Livewire\Attributes\Renderless;
 
 class AutocompleteInput extends Field
 {
@@ -165,6 +167,28 @@ class AutocompleteInput extends Field
     public function getLoadingMessage(): string
     {
         return $this->evaluate($this->loadingMessage);
+    }
+
+    #[ExposedLivewireMethod]
+    #[Renderless]
+    public function search(string $search): array
+    {
+        if ($this->getSearchResultsUsing === null) {
+            return ['results' => [], 'error' => null];
+        }
+
+        try {
+            $raw = $this->evaluate($this->getSearchResultsUsing, ['search' => $search]) ?? [];
+        } catch (\Throwable $e) {
+            return ['results' => [], 'error' => $e->getMessage()];
+        }
+
+        $results = array_map(
+            fn (array $item) => $this->mapItem($item),
+            array_slice(array_values($raw), 0, $this->getMaxResults()),
+        );
+
+        return ['results' => $results, 'error' => null];
     }
 
     public function getOptionsForJs(): array
