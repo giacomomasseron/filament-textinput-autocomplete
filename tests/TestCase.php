@@ -20,4 +20,9 @@ class TestCase extends Orchestra
             TextInputAutocompleteServiceProvider::class,
         ];
     }
+
+    protected function defineEnvironment($app): void
+    {
+        $app['view']->addNamespace('test-fixtures', __DIR__ . '/views');
+    }
 }

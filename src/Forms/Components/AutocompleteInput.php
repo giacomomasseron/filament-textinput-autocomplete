@@ -166,4 +166,27 @@ class AutocompleteInput extends Field
     {
         return $this->evaluate($this->loadingMessage);
     }
+
+    protected function renderItem(array $item): string
+    {
+        $itemView = $this->itemView;
+
+        if ($itemView instanceof \Closure) {
+            return (string) $this->evaluate($itemView, ['item' => $item]);
+        }
+
+        if (is_string($itemView)) {
+            if (view()->exists($itemView)) {
+                return view($itemView, ['item' => $item])->render();
+            }
+
+            return preg_replace_callback(
+                '/\{(\w+)\}/',
+                fn (array $m) => e($item[$m[1]] ?? ''),
+                $itemView,
+            );
+        }
+
+        return e($item[$this->getOptionLabel()] ?? '');
+    }
 }
