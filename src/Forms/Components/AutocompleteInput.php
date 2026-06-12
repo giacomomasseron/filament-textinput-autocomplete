@@ -171,7 +171,7 @@ class AutocompleteInput extends Field
     {
         $itemView = $this->itemView;
 
-        if ($itemView instanceof \Closure) {
+        if ($itemView instanceof Closure) {
             return (string) $this->evaluate($itemView, ['item' => $item]);
         }
 
@@ -182,11 +182,13 @@ class AutocompleteInput extends Field
 
             return preg_replace_callback(
                 '/\{(\w+)\}/',
-                fn (array $m) => e($item[$m[1]] ?? ''),
+                fn (array $m) => e((string) ($item[$m[1]] ?? '')),
                 $itemView,
             );
         }
 
-        return e($item[$this->getOptionLabel()] ?? '');
+        $label = $this->getOptionLabel();
+
+        return e((string) ($item[$label] ?? ''));
     }
 }
