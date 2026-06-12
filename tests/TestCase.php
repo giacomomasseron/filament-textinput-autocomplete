@@ -23,6 +23,7 @@ class TestCase extends Orchestra
 
     protected function defineEnvironment($app): void
     {
+        $app['config']->set('app.key', 'base64:' . base64_encode(random_bytes(32)));
         $app['view']->addNamespace('test-fixtures', __DIR__ . '/views');
     }
 }
