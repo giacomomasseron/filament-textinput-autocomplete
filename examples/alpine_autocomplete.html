@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alpine.js Autocomplete Plugin</title>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      padding: 40px 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: white;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    h1 {
+      margin-bottom: 30px;
+      color: #333;
+      font-size: 28px;
+    }
+
+    .autocomplete-wrapper {
+      position: relative;
+      margin-bottom: 30px;
+    }
+
+    .autocomplete-input {
+      width: 100%;
+      padding: 12px 16px;
+      font-size: 16px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .autocomplete-input:focus {
+      border-color: #667eea;
+    }
+
+    .autocomplete-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      margin-top: 8px;
+      max-height: 400px;
+      overflow-y: auto;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+    }
+
+    .autocomplete-item {
+      padding: 12px 16px;
+      cursor: pointer;
+      border-bottom: 1px solid #f5f5f5;
+      transition: background-color 0.15s;
+    }
+
+    .autocomplete-item:last-child {
+      border-bottom: none;
+    }
+
+    .autocomplete-item:hover,
+    .autocomplete-item.active {
+      background-color: #f8f9ff;
+    }
+
+    .autocomplete-empty {
+      padding: 20px;
+      text-align: center;
+      color: #999;
+    }
+
+    .item-title {
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 4px;
+    }
+
+    .item-description {
+      font-size: 14px;
+      color: #666;
+    }
+
+    .item-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      background: #667eea;
+      color: white;
+      font-size: 12px;
+      border-radius: 4px;
+      margin-left: 8px;
+    }
+
+    .selected-value {
+      padding: 16px;
+      background: #f8f9ff;
+      border-radius: 8px;
+      border-left: 4px solid #667eea;
+    }
+
+    .selected-value strong {
+      color: #667eea;
+    }
+
+    code {
+      background: #f5f5f5;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Alpine.js Autocomplete Plugin</h1>
+
+    <div x-data="autocomplete({
+      data: sampleData,
+      searchKeys: ['title', 'description'],
+      minChars: 1,
+      template: 'custom',
+      onSelect: (item) => { console.log('Selected:', item); }
+    })">
+      <div class="autocomplete-wrapper">
+        <input 
+          type="text" 
+          class="autocomplete-input"
+          placeholder="Search countries, languages, or technologies..."
+          x-model="query"
+          @input="search()"
+          @keydown.down.prevent="navigateDown()"
+          @keydown.up.prevent="navigateUp()"
+          @keydown.enter.prevent="selectActive()"
+          @keydown.escape="close()"
+          @focus="search()"
+          autocomplete="off"
+        >
+
+        <div 
+          x-show="isOpen && results.length > 0" 
+          class="autocomplete-dropdown"
+          x-transition
+          @click.outside="close()"
+        >
+          <template x-for="(item, index) in results" :key="item.id">
+            <div 
+              class="autocomplete-item"
+              :class="{ 'active': index === activeIndex }"
+              @click="select(item)"
+              @mouseenter="activeIndex = index"
+            >
+              <!-- Custom HTML Template -->
+              <div class="item-title">
+                <span x-text="item.title"></span>
+                <span class="item-badge" x-text="item.type" x-show="item.type"></span>
+              </div>
+              <div class="item-description" x-text="item.description"></div>
+            </div>
+          </template>
+        </div>
+
+        <div 
+          x-show="isOpen && query.length >= minChars && results.length === 0" 
+          class="autocomplete-dropdown"
+          x-transition
+        >
+          <div class="autocomplete-empty">
+            No results found for "<span x-text="query"></span>"
+          </div>
+        </div>
+      </div>
+
+      <div class="selected-value" x-show="selected">
+        <strong>Selected:</strong> <span x-text="selected ? selected.title : ''"></span>
+      </div>
+    </div>
+
+    <p style="margin-top: 20px; color: #666; font-size: 14px;">
+      Try typing: <code>Spain</code>, <code>Python</code>, or <code>Mobile</code>
+    </p>
+  </div>
+
+  <script>
+    // Sample data for demonstration
+    const sampleData = [
+      { id: 1, title: 'Spain', description: 'European country known for its culture', type: 'Country' },
+      { id: 2, title: 'Spanish', description: 'Romance language spoken by millions', type: 'Language' },
+      { id: 3, title: 'JavaScript', description: 'Popular programming language for web', type: 'Tech' },
+      { id: 4, title: 'Python', description: 'High-level programming language', type: 'Tech' },
+      { id: 5, title: 'France', description: 'European country with rich history', type: 'Country' },
+      { id: 6, title: 'French', description: 'Romance language spoken in France', type: 'Language' },
+      { id: 7, title: 'Germany', description: 'Central European country', type: 'Country' },
+      { id: 8, title: 'React', description: 'JavaScript library for building UIs', type: 'Tech' },
+      { id: 9, title: 'Vue.js', description: 'Progressive JavaScript framework', type: 'Tech' },
+      { id: 10, title: 'Alpine.js', description: 'Lightweight JavaScript framework', type: 'Tech' },
+      { id: 11, title: 'Italy', description: 'Mediterranean country known for cuisine', type: 'Country' },
+      { id: 12, title: 'Italian', description: 'Romance language of Italy', type: 'Language' },
+      { id: 13, title: 'TypeScript', description: 'Typed superset of JavaScript', type: 'Tech' },
+      { id: 14, title: 'Portugal', description: 'Southwestern European country', type: 'Country' },
+      { id: 15, title: 'Portuguese', description: 'Language spoken in Portugal and Brazil', type: 'Language' },
+      { id: 16, title: 'Mobile Development', description: 'Creating apps for mobile devices', type: 'Tech' },
+      { id: 17, title: 'Web Development', description: 'Building websites and web applications', type: 'Tech' },
+      { id: 18, title: 'Database Design', description: 'Structuring data storage systems', type: 'Tech' },
+    ];
+
+    // Alpine.js Autocomplete Plugin
+    document.addEventListener('alpine:init', () => {
+      Alpine.data('autocomplete', (config = {}) => ({
+        // Configuration
+        data: config.data || [],
+        searchKeys: config.searchKeys || ['title'],
+        minChars: config.minChars || 2,
+        maxResults: config.maxResults || 10,
+        onSelect: config.onSelect || (() => {}),
+        
+        // State
+        query: '',
+        results: [],
+        isOpen: false,
+        activeIndex: -1,
+        selected: null,
+
+        // Search function
+        search() {
+          if (this.query.length < this.minChars) {
+            this.results = [];
+            this.isOpen = false;
+            return;
+          }
+
+          const searchTerm = this.query.toLowerCase();
+          
+          this.results = this.data
+            .filter(item => {
+              return this.searchKeys.some(key => {
+                const value = item[key];
+                return value && value.toLowerCase().includes(searchTerm);
+              });
+            })
+            .slice(0, this.maxResults);
+
+          this.isOpen = true;
+          this.activeIndex = -1;
+        },
+
+        // Navigation
+        navigateDown() {
+          if (this.activeIndex < this.results.length - 1) {
+            this.activeIndex++;
+          }
+        },
+
+        navigateUp() {
+          if (this.activeIndex > 0) {
+            this.activeIndex--;
+          }
+        },
+
+        selectActive() {
+          if (this.activeIndex >= 0 && this.activeIndex < this.results.length) {
+            this.select(this.results[this.activeIndex]);
+          }
+        },
+
+        // Selection
+        select(item) {
+          this.selected = item;
+          this.query = item.title;
+          this.isOpen = false;
+          this.activeIndex = -1;
+          this.onSelect(item);
+        },
+
+        // Close dropdown
+        close() {
+          this.isOpen = false;
+          this.activeIndex = -1;
+        },
+
+        // Initialize
+        init() {
+          // Additional initialization if needed
+        }
+      }));
+    });
+  </script>
+</body>
+</html>
