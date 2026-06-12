@@ -169,10 +169,25 @@ class AutocompleteInput extends Field
         return $this->evaluate($this->loadingMessage);
     }
 
+    protected function validateConfiguration(): void
+    {
+        if ($this->options !== null && $this->getSearchResultsUsing !== null) {
+            throw new \InvalidArgumentException(
+                'AutocompleteInput cannot use both static options() and getSearchResultsUsing(); choose one source.',
+            );
+        }
+
+        if ($this->getMaxResults() < 1) {
+            throw new \InvalidArgumentException('AutocompleteInput maxResults() must be at least 1.');
+        }
+    }
+
     #[ExposedLivewireMethod]
     #[Renderless]
     public function search(string $search): array
     {
+        $this->validateConfiguration();
+
         if ($this->getSearchResultsUsing === null) {
             return ['results' => [], 'error' => null];
         }
@@ -193,6 +208,8 @@ class AutocompleteInput extends Field
 
     public function getOptionsForJs(): array
     {
+        $this->validateConfiguration();
+
         $options = $this->getOptions() ?? [];
 
         return array_map(fn (array $item) => $this->mapItem($item), $options);
