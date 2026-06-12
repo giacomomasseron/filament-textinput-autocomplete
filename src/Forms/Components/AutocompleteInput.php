@@ -178,7 +178,7 @@ class AutocompleteInput extends Field
         }
 
         try {
-            $raw = $this->evaluate($this->getSearchResultsUsing, ['search' => $search]) ?? [];
+            $raw = collect($this->evaluate($this->getSearchResultsUsing, ['search' => $search]) ?? [])->all();
         } catch (\Throwable $e) {
             return ['results' => [], 'error' => $e->getMessage()];
         }
