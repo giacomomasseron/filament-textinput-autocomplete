@@ -40,3 +40,18 @@ it('returns empty results without server search configured', function () {
 
     expect($out['results'])->toBe([])->and($out['error'])->toBeNull();
 });
+
+it('accepts a Collection returned from the search closure', function () {
+    $field = AutocompleteInput::make('q')
+        ->itemView(fn (array $item) => "<i>{$item['label']}</i>")
+        ->getSearchResultsUsing(fn (string $search) => collect([
+            ['value' => 1, 'label' => $search . '-a'],
+            ['value' => 2, 'label' => $search . '-b'],
+        ]));
+
+    $out = $field->search('x');
+
+    expect($out['error'])->toBeNull()
+        ->and($out['results'])->toHaveCount(2)
+        ->and($out['results'][1])->toMatchArray(['value' => 2, 'label' => 'x-b']);
+});
