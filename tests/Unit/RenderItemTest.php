@@ -44,3 +44,22 @@ it('escapes token values in template strings', function () {
 
     expect(callRenderItem($field, ['label' => '<x>']))->toBe('<div>&lt;x&gt;</div>');
 });
+
+it('casts non-string token values to string when rendering templates', function () {
+    $field = AutocompleteInput::make('q')->itemView('<div>{label} #{id}</div>');
+
+    expect(callRenderItem($field, ['label' => 'Spain', 'id' => 42]))
+        ->toBe('<div>Spain #42</div>');
+});
+
+it('uses the configured optionLabel in the default render', function () {
+    $field = AutocompleteInput::make('q')->optionLabel('name');
+
+    expect(callRenderItem($field, ['name' => 'Spain']))->toBe('Spain');
+});
+
+it('returns an empty string when the default label key is missing', function () {
+    $field = AutocompleteInput::make('q');
+
+    expect(callRenderItem($field, ['other' => 'x']))->toBe('');
+});
