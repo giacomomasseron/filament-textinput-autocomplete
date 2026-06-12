@@ -33,6 +33,8 @@ class AutocompleteInput extends Field
 
     protected string | Closure $loadingMessage = 'Loading...';
 
+    protected string | Closure | null $placeholder = null;
+
     protected ?Closure $afterSelected = null;
 
     public function options(array | Closure $options): static
@@ -112,6 +114,13 @@ class AutocompleteInput extends Field
         return $this;
     }
 
+    public function placeholder(string | Closure | null $placeholder): static
+    {
+        $this->placeholder = $placeholder;
+
+        return $this;
+    }
+
     public function afterSelected(Closure $callback): static
     {
         $this->afterSelected = $callback;
@@ -167,6 +176,11 @@ class AutocompleteInput extends Field
     public function getLoadingMessage(): string
     {
         return $this->evaluate($this->loadingMessage);
+    }
+
+    public function getPlaceholder(): ?string
+    {
+        return $this->evaluate($this->placeholder);
     }
 
     protected function validateConfiguration(): void
