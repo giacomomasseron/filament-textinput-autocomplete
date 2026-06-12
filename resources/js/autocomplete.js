@@ -4,7 +4,6 @@ export default function autocomplete(config) {
         serverSearch: config.serverSearch,
         componentKey: config.componentKey,
         options: config.options || [],
-        searchKeys: config.searchKeys || ['label'],
         minChars: config.minChars ?? 1,
         debounceTime: config.debounceTime ?? 300,
         maxResults: config.maxResults ?? 10,
@@ -20,11 +19,12 @@ export default function autocomplete(config) {
         error: null,
         activeIndex: -1,
         debounceTimer: null,
+        requestId: 0,
 
         init() {
             // Reflect any pre-existing state value into the visible input.
-            if (this.state) {
-                this.query = this.state;
+            if (this.state !== null && this.state !== undefined && this.state !== '') {
+                this.query = String(this.state);
             }
         },
 
@@ -60,20 +60,32 @@ export default function autocomplete(config) {
         },
 
         async fetchResults() {
+            const requestId = ++this.requestId;
+
             try {
                 const response = await this.$wire.callSchemaComponentMethod(
                     this.componentKey,
                     'search',
                     { search: this.query },
                 );
+
+                if (requestId !== this.requestId) {
+                    return; // a newer request superseded this one
+                }
+
                 this.results = response.results || [];
                 this.error = response.error || null;
             } catch (e) {
+                if (requestId !== this.requestId) {
+                    return;
+                }
                 this.results = [];
                 this.error = e?.message || 'Search failed';
             } finally {
-                this.isLoading = false;
-                this.activeIndex = -1;
+                if (requestId === this.requestId) {
+                    this.isLoading = false;
+                    this.activeIndex = -1;
+                }
             }
         },
 
@@ -82,7 +94,7 @@ export default function autocomplete(config) {
         },
 
         navigateUp() {
-            if (this.activeIndex > 0) this.activeIndex--;
+            if (this.activeIndex > -1) this.activeIndex--;
         },
 
         selectActive() {
