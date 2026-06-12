@@ -15,7 +15,6 @@
             componentKey: @js($key),
             serverSearch: @js($field->hasServerSearch()),
             options: @js($field->getOptionsForJs()),
-            searchKeys: @js($field->getSearchKeys()),
             minChars: @js($field->getMinChars()),
             debounceTime: @js($field->getSearchDebounce()),
             maxResults: @js($field->getMaxResults()),
@@ -37,7 +36,7 @@
             @keydown.escape="close()"
             autocomplete="off"
             placeholder="{{ $getPlaceholder() }}"
-            {{ $isDisabled() ? 'disabled' : '' }}
+            @disabled($isDisabled())
             class="fi-input block w-full rounded-lg border-none bg-white px-3 py-1.5 text-base shadow-sm ring-1 ring-gray-950/10 dark:bg-white/5 dark:text-white dark:ring-white/20"
         />
 
