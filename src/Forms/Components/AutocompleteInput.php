@@ -35,8 +35,6 @@ class AutocompleteInput extends Field
 
     protected string | Closure | null $placeholder = null;
 
-    protected ?Closure $afterSelected = null;
-
     public function options(array | Closure $options): static
     {
         $this->options = $options;
@@ -121,13 +119,6 @@ class AutocompleteInput extends Field
         return $this;
     }
 
-    public function afterSelected(Closure $callback): static
-    {
-        $this->afterSelected = $callback;
-
-        return $this;
-    }
-
     public function getOptions(): ?array
     {
         return $this->evaluate($this->options);
@@ -208,14 +199,14 @@ class AutocompleteInput extends Field
 
         try {
             $raw = collect($this->evaluate($this->getSearchResultsUsing, ['search' => $search]) ?? [])->all();
+
+            $results = array_map(
+                fn (array $item) => $this->mapItem($item),
+                array_slice(array_values($raw), 0, $this->getMaxResults()),
+            );
         } catch (\Throwable $e) {
             return ['results' => [], 'error' => $e->getMessage()];
         }
-
-        $results = array_map(
-            fn (array $item) => $this->mapItem($item),
-            array_slice(array_values($raw), 0, $this->getMaxResults()),
-        );
 
         return ['results' => $results, 'error' => null];
     }

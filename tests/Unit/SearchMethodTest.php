@@ -55,3 +55,13 @@ it('accepts a Collection returned from the search closure', function () {
         ->and($out['results'])->toHaveCount(2)
         ->and($out['results'][1])->toMatchArray(['value' => 2, 'label' => 'x-b']);
 });
+
+it('returns a graceful error when the closure returns a non-array item shape', function () {
+    $field = AutocompleteInput::make('q')
+        ->getSearchResultsUsing(fn (string $search) => ['just-a-string']);
+
+    $out = $field->search('x');
+
+    expect($out['results'])->toBe([])
+        ->and($out['error'])->not->toBeNull();
+});
