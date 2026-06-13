@@ -10,7 +10,7 @@ use Spatie\LaravelPackageTools\PackageServiceProvider;
 
 class TextInputAutocompleteServiceProvider extends PackageServiceProvider
 {
-    public static string $assetPackageName = 'giacomo/filament-textinput-autocomplete';
+    public static string $assetPackageName = 'giacomomasseron/filament-textinput-autocomplete';
 
     public function configurePackage(Package $package): void
     {
