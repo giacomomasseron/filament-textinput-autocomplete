@@ -1,5 +1,5 @@
 {
-    "name": "giacomo/filament-textinput-autocomplete",
+    "name": "giacomomasseron/filament-textinput-autocomplete",
     "description": "A Filament v5 TextInput field with autocomplete (static + server search).",
     "type": "library",
     "license": "MIT",

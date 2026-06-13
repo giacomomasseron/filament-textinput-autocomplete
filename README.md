@@ -12,7 +12,7 @@ markup is rendered by PHP via a single `itemView()` setter.
 ## Installation
 
 ```bash
-composer require giacomo/filament-textinput-autocomplete
+composer require giacomomasseron/filament-textinput-autocomplete
 ```
 
 The compiled Alpine component and CSS ship in `dist/` and are registered with Filament
