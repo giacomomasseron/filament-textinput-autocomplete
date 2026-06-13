@@ -9,6 +9,16 @@ A Filament v5 form field: a free-text input with an autocomplete dropdown. Sugge
 static (filtered in the browser) or fetched from the server through Livewire. Each suggestion's
 markup is rendered by PHP via a single `itemView()` setter.
 
+## Screenshots
+
+Static options (filtered client-side):
+
+![Static autocomplete](screenshots/screen_static.png)
+
+Server search (via Livewire, optionally calling an external API):
+
+![Server-search autocomplete](screenshots/screen_apis.png)
+
 ## Requirements
 
 - PHP 8.2+
