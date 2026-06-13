@@ -1,6 +1,6 @@
 <?php
 
-use Giacomo\TextInputAutocomplete\Forms\Components\AutocompleteInput;
+use GiacomoMasseroni\TextInputAutocomplete\Forms\Components\AutocompleteInput;
 
 it('returns mapped, html-rendered, capped results', function () {
     $field = AutocompleteInput::make('q')

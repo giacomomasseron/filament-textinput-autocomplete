@@ -1,6 +1,6 @@
 <?php
 
-use Giacomo\TextInputAutocomplete\Forms\Components\AutocompleteInput;
+use GiacomoMasseroni\TextInputAutocomplete\Forms\Components\AutocompleteInput;
 
 function callRenderItem(AutocompleteInput $field, array $item): string
 {

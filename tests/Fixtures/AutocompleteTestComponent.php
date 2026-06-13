@@ -1,11 +1,11 @@
 <?php
 
-namespace Giacomo\TextInputAutocomplete\Tests\Fixtures;
+namespace GiacomoMasseroni\TextInputAutocomplete\Tests\Fixtures;
 
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Schemas\Schema;
-use Giacomo\TextInputAutocomplete\Forms\Components\AutocompleteInput;
+use GiacomoMasseroni\TextInputAutocomplete\Forms\Components\AutocompleteInput;
 use Livewire\Component;
 
 class AutocompleteTestComponent extends Component implements HasForms

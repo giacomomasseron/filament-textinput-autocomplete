@@ -13,12 +13,13 @@ Use it anywhere a Filament field is valid: resource forms, schemas, custom Livew
 with `InteractsWithForms`.
 
 ```php
-use Giacomo\TextInputAutocomplete\Forms\Components\AutocompleteInput;
+use GiacomoMasseroni\TextInputAutocomplete\Forms\Components\AutocompleteInput;
 ```
 
-> Note: the Composer package is `giacomomasseron/filament-textinput-autocomplete`, but the PHP
-> namespace is `Giacomo\TextInputAutocomplete\` (note: NOT `Giacomomasseron\`). Import the field
-> from the namespace shown above.
+> Note: the Composer package and the PHP namespace are spelled differently — mind the trailing
+> "i". The package is `giacomomasseron/filament-textinput-autocomplete` (vendor `giacomomasseron`,
+> no "i"), while the namespace is `GiacomoMasseroni\TextInputAutocomplete\` (with "i"). Import the
+> field from the namespace shown above.
 
 ## Setup
 
@@ -119,4 +120,4 @@ CSS. The markup inside each suggestion is whatever `itemView()` returns — you 
 - Forgetting `php artisan filament:assets` → field loads but is unstyled / inert.
 - Expecting `itemView()` closure output to be auto-escaped → it is raw HTML; escape it yourself.
   (The `{token}` template form and the default DO escape.)
-- Importing from a `Giacomomasseron\...` namespace → wrong. Use `Giacomo\TextInputAutocomplete\`.
+- Importing from a `Giacomomasseron\...` namespace → wrong. Use `GiacomoMasseroni\TextInputAutocomplete\`.

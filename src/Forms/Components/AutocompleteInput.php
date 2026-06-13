@@ -1,6 +1,6 @@
 <?php
 
-namespace Giacomo\TextInputAutocomplete\Forms\Components;
+namespace GiacomoMasseroni\TextInputAutocomplete\Forms\Components;
 
 use Closure;
 use Filament\Forms\Components\Field;

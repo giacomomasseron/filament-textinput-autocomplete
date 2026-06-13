@@ -1,6 +1,6 @@
 <?php
 
-use Giacomo\TextInputAutocomplete\Forms\Components\AutocompleteInput;
+use GiacomoMasseroni\TextInputAutocomplete\Forms\Components\AutocompleteInput;
 
 it('can be instantiated with a name', function () {
     $field = AutocompleteInput::make('country');

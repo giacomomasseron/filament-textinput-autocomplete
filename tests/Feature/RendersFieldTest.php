@@ -1,6 +1,6 @@
 <?php
 
-use Giacomo\TextInputAutocomplete\Tests\Fixtures\AutocompleteTestComponent;
+use GiacomoMasseroni\TextInputAutocomplete\Tests\Fixtures\AutocompleteTestComponent;
 use Livewire\Livewire;
 
 it('renders the static field markup in a Filament schema', function () {
