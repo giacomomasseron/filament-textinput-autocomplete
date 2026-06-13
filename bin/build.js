@@ -10,3 +10,12 @@ await esbuild.build({
 });
 
 console.log('Built dist/components/autocomplete.js');
+
+await esbuild.build({
+    entryPoints: ['resources/css/autocomplete.css'],
+    outfile: 'dist/autocomplete.css',
+    bundle: true,
+    minify: true,
+});
+
+console.log('Built dist/autocomplete.css');

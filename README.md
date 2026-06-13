@@ -15,8 +15,13 @@ markup is rendered by PHP via a single `itemView()` setter.
 composer require giacomo/filament-textinput-autocomplete
 ```
 
-The compiled Alpine asset ships in `dist/` and is registered automatically — no npm step is
-required to use the package.
+The compiled Alpine component and CSS ship in `dist/` and are registered with Filament
+automatically — no npm step is required to use the package. As with any Filament plugin that
+registers assets, publish them once (and on each deploy) so the stylesheet is served:
+
+```bash
+php artisan filament:assets
+```
 
 ## Usage
 
@@ -95,7 +100,8 @@ If `itemView()` is not set, the item's `optionLabel` value is shown as escaped t
 
 The field ships with a self-contained default style (a light input with a `#667eea` focus
 accent and a shadowed dropdown) so it looks consistent out of the box without depending on
-your panel's theme. The styles are scoped to these classes:
+your panel's theme. It is served as a registered Filament CSS asset (`dist/autocomplete.css`,
+published via `php artisan filament:assets`). The styles are scoped to these classes:
 
 | Class | Element |
 |---|---|
@@ -113,7 +119,7 @@ suggestion is whatever your `itemView()` returns, so you control that completely
 ```bash
 composer install
 npm install
-npm run build      # rebuild dist/components/autocomplete.js after editing resources/js
+npm run build      # rebuild dist/ assets after editing resources/js or resources/css
 vendor/bin/pest    # run the test suite
 ```
 
