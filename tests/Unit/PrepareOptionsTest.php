@@ -1,6 +1,6 @@
 <?php
 
-use Giacomo\TextInputAutocomplete\Forms\Components\AutocompleteInput;
+use GiacomoMasseroni\TextInputAutocomplete\Forms\Components\AutocompleteInput;
 
 it('returns an empty array when no static options are set', function () {
     expect(AutocompleteInput::make('q')->getOptionsForJs())->toBe([]);

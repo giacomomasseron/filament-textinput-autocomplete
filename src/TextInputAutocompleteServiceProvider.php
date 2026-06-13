@@ -1,6 +1,6 @@
 <?php
 
-namespace Giacomo\TextInputAutocomplete;
+namespace GiacomoMasseroni\TextInputAutocomplete;
 
 use Filament\Support\Assets\AlpineComponent;
 use Filament\Support\Assets\Css;

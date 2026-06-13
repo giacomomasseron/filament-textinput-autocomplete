@@ -1,6 +1,6 @@
 <?php
 
-use Giacomo\TextInputAutocomplete\Forms\Components\AutocompleteInput;
+use GiacomoMasseroni\TextInputAutocomplete\Forms\Components\AutocompleteInput;
 
 it('throws when both static and server sources are set', function () {
     $field = AutocompleteInput::make('q')

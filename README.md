@@ -28,7 +28,7 @@ php artisan filament:assets
 ### Static options (filtered client-side)
 
 ```php
-use Giacomo\TextInputAutocomplete\Forms\Components\AutocompleteInput;
+use GiacomoMasseroni\TextInputAutocomplete\Forms\Components\AutocompleteInput;
 
 AutocompleteInput::make('country')
     ->options([
@@ -42,7 +42,7 @@ AutocompleteInput::make('country')
 ### Server search (via Livewire; may call an external API)
 
 ```php
-use Giacomo\TextInputAutocomplete\Forms\Components\AutocompleteInput;
+use GiacomoMasseroni\TextInputAutocomplete\Forms\Components\AutocompleteInput;
 use Illuminate\Support\Facades\Http;
 
 AutocompleteInput::make('repo')

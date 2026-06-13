@@ -1,8 +1,8 @@
 <?php
 
-namespace Giacomo\TextInputAutocomplete\Tests;
+namespace GiacomoMasseroni\TextInputAutocomplete\Tests;
 
-use Giacomo\TextInputAutocomplete\TextInputAutocompleteServiceProvider;
+use GiacomoMasseroni\TextInputAutocomplete\TextInputAutocompleteServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
 
 class TestCase extends Orchestra
