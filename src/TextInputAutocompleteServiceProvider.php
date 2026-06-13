@@ -3,6 +3,7 @@
 namespace Giacomo\TextInputAutocomplete;
 
 use Filament\Support\Assets\AlpineComponent;
+use Filament\Support\Assets\Css;
 use Filament\Support\Facades\FilamentAsset;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
@@ -22,6 +23,7 @@ class TextInputAutocompleteServiceProvider extends PackageServiceProvider
     {
         FilamentAsset::register([
             AlpineComponent::make('autocomplete', __DIR__ . '/../dist/components/autocomplete.js'),
+            Css::make('autocomplete', __DIR__ . '/../dist/autocomplete.css'),
         ], package: static::$assetPackageName);
     }
 }
