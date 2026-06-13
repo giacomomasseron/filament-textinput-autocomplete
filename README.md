@@ -1,5 +1,10 @@
 # Filament TextInput Autocomplete
 
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/giacomomasseron/filament-textinput-autocomplete.svg?style=flat-square)](https://packagist.org/packages/giacomomasseron/filament-textinput-autocomplete)
+[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/giacomomasseron/filament-textinput-autocomplete/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/giacomomasseron/filament-textinput-autocomplete/actions?query=workflow%3Arun-tests+branch%3Amain)
+[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/giacomomasseron/filament-textinput-autocomplete/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/giacomomasseron/filament-textinput-autocomplete/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
+[![Total Downloads](https://img.shields.io/packagist/dt/giacomomasseron/filament-textinput-autocomplete.svg?style=flat-square)](https://packagist.org/packages/giacomomasseron/filament-textinput-autocomplete)
+
 A Filament v5 form field: a free-text input with an autocomplete dropdown. Suggestions can be
 static (filtered in the browser) or fetched from the server through Livewire. Each suggestion's
 markup is rendered by PHP via a single `itemView()` setter.
