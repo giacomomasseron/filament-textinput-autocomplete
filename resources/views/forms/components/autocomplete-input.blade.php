@@ -9,7 +9,7 @@
 >
     <div
         x-load
-        x-load-src="{{ \Filament\Support\Facades\FilamentAsset::getAlpineComponentSrc('autocomplete', \Giacomo\TextInputAutocomplete\TextInputAutocompleteServiceProvider::$assetPackageName) }}"
+        x-load-src="{{ \Filament\Support\Facades\FilamentAsset::getAlpineComponentSrc('autocomplete', \GiacomoMasseroni\TextInputAutocomplete\TextInputAutocompleteServiceProvider::$assetPackageName) }}"
         x-data="autocomplete({
             state: $wire.$entangle('{{ $statePath }}'),
             componentKey: @js($key),
