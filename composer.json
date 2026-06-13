@@ -15,18 +15,18 @@
     },
     "autoload": {
         "psr-4": {
-            "Giacomo\\TextInputAutocomplete\\": "src/"
+            "GiacomoMasseroni\\TextInputAutocomplete\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Giacomo\\TextInputAutocomplete\\Tests\\": "tests/"
+            "GiacomoMasseroni\\TextInputAutocomplete\\Tests\\": "tests/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Giacomo\\TextInputAutocomplete\\TextInputAutocompleteServiceProvider"
+                "GiacomoMasseroni\\TextInputAutocomplete\\TextInputAutocompleteServiceProvider"
             ]
         }
     },
