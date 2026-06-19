@@ -12,10 +12,15 @@ class AutocompleteInput extends Field
 {
     protected string $view = 'filament-textinput-autocomplete::forms.components.autocomplete-input';
 
+<<<<<<< HEAD
     /** @var array<int, array<string, mixed>>|Closure|null */
     protected array|Closure|null $options = null;
 
     /** @var array<int, string>|Closure */
+=======
+    protected array|Closure|null $options = null;
+
+>>>>>>> ccfe35f76c1b6809f618a248ee609a321fef17d7
     protected array|Closure $searchKeys = ['label'];
 
     protected ?Closure $getSearchResultsUsing = null;
@@ -38,9 +43,12 @@ class AutocompleteInput extends Field
 
     protected string|Closure|null $placeholder = null;
 
+<<<<<<< HEAD
     /**
      * @param  array<int, array<string, mixed>>|Closure  $options
      */
+=======
+>>>>>>> ccfe35f76c1b6809f618a248ee609a321fef17d7
     public function options(array|Closure $options): static
     {
         $this->options = $options;
@@ -48,9 +56,12 @@ class AutocompleteInput extends Field
         return $this;
     }
 
+<<<<<<< HEAD
     /**
      * @param  array<int, string>|Closure  $keys
      */
+=======
+>>>>>>> ccfe35f76c1b6809f618a248ee609a321fef17d7
     public function searchKeys(array|Closure $keys): static
     {
         $this->searchKeys = $keys;
