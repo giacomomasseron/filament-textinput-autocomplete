@@ -24,20 +24,25 @@
         class="fi-ac-wrapper"
         @click.outside="close()"
     >
-        <input
-            type="text"
-            class="fi-ac-input"
-            x-model="query"
-            @input="search()"
-            @focus="search()"
-            @keydown.down.prevent="navigateDown()"
-            @keydown.up.prevent="navigateUp()"
-            @keydown.enter.prevent="selectActive()"
-            @keydown.escape="close()"
-            autocomplete="off"
-            placeholder="{{ $getPlaceholder() }}"
-            @disabled($isDisabled())
-        />
+        <x-filament::input.wrapper
+            :disabled="$isDisabled()"
+            :valid="! $errors->has($statePath)"
+        >
+            <x-filament::input
+                type="text"
+                class="fi-ac-input"
+                x-model="query"
+                @input="search()"
+                @focus="search()"
+                @keydown.down.prevent="navigateDown()"
+                @keydown.up.prevent="navigateUp()"
+                @keydown.enter.prevent="selectActive()"
+                @keydown.escape="close()"
+                autocomplete="off"
+                :placeholder="$getPlaceholder()"
+                :disabled="$isDisabled()"
+            />
+        </x-filament::input.wrapper>
 
         <div
             x-show="isOpen"
