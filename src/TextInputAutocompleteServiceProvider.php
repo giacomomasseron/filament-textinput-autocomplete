@@ -22,8 +22,8 @@ class TextInputAutocompleteServiceProvider extends PackageServiceProvider
     public function packageBooted(): void
     {
         FilamentAsset::register([
-            AlpineComponent::make('autocomplete', __DIR__ . '/../dist/components/autocomplete.js'),
-            Css::make('autocomplete', __DIR__ . '/../dist/autocomplete.css'),
+            AlpineComponent::make('autocomplete', __DIR__.'/../dist/components/autocomplete.js'),
+            Css::make('autocomplete', __DIR__.'/../dist/autocomplete.css'),
         ], package: static::$assetPackageName);
     }
 }

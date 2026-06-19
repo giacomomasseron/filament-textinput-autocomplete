@@ -7,9 +7,9 @@ it('returns mapped, html-rendered, capped results', function () {
         ->maxResults(2)
         ->itemView(fn (array $item) => "<i>{$item['label']}</i>")
         ->getSearchResultsUsing(fn (string $search) => [
-            ['value' => 1, 'label' => $search . '-a'],
-            ['value' => 2, 'label' => $search . '-b'],
-            ['value' => 3, 'label' => $search . '-c'],
+            ['value' => 1, 'label' => $search.'-a'],
+            ['value' => 2, 'label' => $search.'-b'],
+            ['value' => 3, 'label' => $search.'-c'],
         ]);
 
     $out = $field->search('x');
@@ -45,8 +45,8 @@ it('accepts a Collection returned from the search closure', function () {
     $field = AutocompleteInput::make('q')
         ->itemView(fn (array $item) => "<i>{$item['label']}</i>")
         ->getSearchResultsUsing(fn (string $search) => collect([
-            ['value' => 1, 'label' => $search . '-a'],
-            ['value' => 2, 'label' => $search . '-b'],
+            ['value' => 1, 'label' => $search.'-a'],
+            ['value' => 2, 'label' => $search.'-b'],
         ]));
 
     $out = $field->search('x');
