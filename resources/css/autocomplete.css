@@ -2,25 +2,14 @@
     position: relative;
 }
 
-.fi-ac-input {
-    width: 100%;
-    padding: 12px 16px;
-    font-size: 16px;
-    border: 2px solid #e0e0e0;
-    border-radius: 8px;
-    outline: none;
-    background: #fff;
-    transition: border-color 0.2s;
-}
-
-.fi-ac-input:focus {
-    border-color: #667eea;
-}
-
-.fi-ac-input:disabled {
-    background: #f5f5f5;
-    cursor: not-allowed;
-}
+/*
+ * The input itself is rendered through Filament's native
+ * <x-filament::input.wrapper> / <x-filament::input> components, so its
+ * border, ring, background, rounding and dark-mode handling come straight
+ * from Filament's `.fi-input-wrp` / `.fi-input` styles — matching a standard
+ * TextInput exactly. `.fi-ac-input` is kept only as a stable hook/marker class
+ * and intentionally carries no styling of its own.
+ */
 
 .fi-ac-dropdown {
     position: absolute;
