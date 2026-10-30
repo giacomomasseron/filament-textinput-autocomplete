@@ -32,7 +32,7 @@
                 type="text"
                 class="fi-ac-input"
                 x-model="query"
-                @input="search()"
+                @input="onInput($event.target.value)"
                 @focus="search()"
                 @keydown.down.prevent="navigateDown()"
                 @keydown.up.prevent="navigateUp()"
