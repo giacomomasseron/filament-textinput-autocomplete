@@ -20,17 +20,38 @@ export default function autocomplete(config) {
         activeIndex: -1,
         debounceTimer: null,
         requestId: 0,
+        selected: null,
 
         init() {
-            // Reflect any pre-existing state value into the visible input.
-            if (this.state !== null && this.state !== undefined && this.state !== '') {
-                this.query = String(this.state);
+            this.syncState(this.state);
+            this.$watch('state', (value) => this.syncState(value));
+        },
+
+        syncState(value) {
+            if (value === this.query || (this.selected && value === (this.selected.value ?? this.selected.label))) {
+                return;
             }
+
+            this.selected = value === null || value === undefined || value === ''
+                ? null
+                : this.options.find((item) => String(item.value ?? item.label) === String(value)) ?? null;
+            this.query = this.selected ? this.selected.label : String(value ?? '');
+            this.close();
+        },
+
+        onInput(value) {
+            this.selected = null;
+            this.query = value;
+            this.state = value;
+            this.search();
         },
 
         search() {
             clearTimeout(this.debounceTimer);
+            this.requestId++;
             this.error = null;
+            this.results = [];
+            this.activeIndex = -1;
 
             if (this.query.length < this.minChars) {
                 this.results = [];
@@ -104,14 +125,23 @@ export default function autocomplete(config) {
         },
 
         select(item) {
+            this.selected = item;
             this.state = item.value ?? item.label;
             this.query = item.label;
             this.close();
         },
 
         close() {
+            clearTimeout(this.debounceTimer);
+            this.requestId++;
+            this.isLoading = false;
+            this.results = [];
             this.isOpen = false;
             this.activeIndex = -1;
+        },
+
+        destroy() {
+            this.close();
         },
     };
 }
