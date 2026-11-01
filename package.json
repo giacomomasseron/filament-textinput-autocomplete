@@ -3,7 +3,8 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "build": "node bin/build.js"
+        "build": "node bin/build.js",
+        "test": "node --test tests/Unit/AutocompleteTest.mjs"
     },
     "devDependencies": {
         "esbuild": "^0.23.0"
