@@ -2,6 +2,25 @@
 
 All notable changes to `filament-textinput-autocomplete` will be documented in this file.
 
+## v1.2.0 - 2026-11-11
+
+### Upgrade notes
+
+- Requires Filament 5.11 or newer (`filament/filament: ^5.11`). If you're on an older Filament 5 version, run `composer update filament/filament` first.
+- A closure that returns the wrong type for a setting (e.g. `minChars(fn () => 'abc')`) now throws an `InvalidArgumentException` that names the setting, instead of a generic `TypeError`.
+
+### Changes
+
+- Use Filament's `#[Exposed]` attribute for the server search method, replacing the deprecated `#[ExposedLivewireMethod]`.
+- Check values returned by configuration closures. Numeric strings are still accepted for number settings, and scalars, `Stringable` and `Htmlable` values for text settings.
+- Static options or server search results that aren't arrays now produce an error saying so.
+
+### Maintenance
+
+- Run PHPStan at max level, on pull requests as well as pushes.
+- Add a CHANGELOG.
+- Stop tracking the PHPStan cache in git.
+
 ## v1.1.0 - 2026-11-11
 
 ### Fixes
