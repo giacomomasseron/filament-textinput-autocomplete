@@ -4,9 +4,12 @@ namespace GiacomoMasseroni\TextInputAutocomplete\Forms\Components;
 
 use Closure;
 use Filament\Forms\Components\Field;
-use Filament\Support\Components\Attributes\ExposedLivewireMethod;
+use Filament\Support\Components\Attributes\Exposed;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Collection;
+use InvalidArgumentException;
 use Livewire\Attributes\Renderless;
+use Stringable;
 
 class AutocompleteInput extends Field
 {
@@ -129,19 +132,38 @@ class AutocompleteInput extends Field
     }
 
     /**
-     * @return array<int, array<string, mixed>>|null
+     * @return list<array<array-key, mixed>>|null
      */
     public function getOptions(): ?array
     {
-        return $this->evaluate($this->options);
+        $options = $this->evaluate($this->options);
+
+        if ($options === null) {
+            return null;
+        }
+
+        return $this->ensureListOfArrays($options, 'AutocompleteInput options() must resolve to a list of arrays');
     }
 
     /**
-     * @return array<int, string>
+     * @return list<string>
      */
     public function getSearchKeys(): array
     {
-        return $this->evaluate($this->searchKeys);
+        $keys = $this->evaluate($this->searchKeys);
+        $message = 'AutocompleteInput searchKeys() must resolve to a list of strings';
+
+        if (! is_array($keys)) {
+            throw $this->invalid($message, $keys);
+        }
+
+        $list = [];
+
+        foreach ($keys as $key) {
+            $list[] = is_string($key) || is_int($key) ? (string) $key : throw $this->invalid($message, $key);
+        }
+
+        return $list;
     }
 
     public function hasServerSearch(): bool
@@ -151,61 +173,68 @@ class AutocompleteInput extends Field
 
     public function getOptionLabel(): string
     {
-        return $this->evaluate($this->optionLabel);
+        return $this->evaluateString($this->optionLabel, 'optionLabel');
     }
 
     public function getOptionValue(): string
     {
-        return $this->evaluate($this->optionValue);
+        return $this->evaluateString($this->optionValue, 'optionValue');
     }
 
     public function getMinChars(): int
     {
-        return $this->evaluate($this->minChars);
+        return $this->evaluateInt($this->minChars, 'minChars');
     }
 
     public function getSearchDebounce(): int
     {
-        return $this->evaluate($this->searchDebounce);
+        return $this->evaluateInt($this->searchDebounce, 'searchDebounce');
     }
 
     public function getMaxResults(): int
     {
-        return $this->evaluate($this->maxResults);
+        return $this->evaluateInt($this->maxResults, 'maxResults');
     }
 
     public function getNoResultsMessage(): string
     {
-        return $this->evaluate($this->noResultsMessage);
+        return $this->evaluateString($this->noResultsMessage, 'noResultsMessage');
     }
 
     public function getLoadingMessage(): string
     {
-        return $this->evaluate($this->loadingMessage);
+        return $this->evaluateString($this->loadingMessage, 'loadingMessage');
     }
 
     public function getPlaceholder(): ?string
     {
-        return $this->evaluate($this->placeholder);
+        $placeholder = $this->evaluate($this->placeholder);
+
+        if ($placeholder === null) {
+            return null;
+        }
+
+        return $this->toText($placeholder)
+            ?? throw $this->invalid('AutocompleteInput placeholder() must resolve to a string', $placeholder);
     }
 
     protected function validateConfiguration(): void
     {
         if ($this->options !== null && $this->getSearchResultsUsing !== null) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 'AutocompleteInput cannot use both static options() and getSearchResultsUsing(); choose one source.',
             );
         }
 
         if ($this->getMaxResults() < 1) {
-            throw new \InvalidArgumentException('AutocompleteInput maxResults() must be at least 1.');
+            throw new InvalidArgumentException('AutocompleteInput maxResults() must be at least 1.');
         }
     }
 
     /**
      * @return array{results: array<int, array<string, mixed>>, error: string|null}
      */
-    #[ExposedLivewireMethod]
+    #[Exposed]
     #[Renderless]
     public function search(string $search): array
     {
@@ -226,7 +255,10 @@ class AutocompleteInput extends Field
 
             $results = array_map(
                 fn (array $item) => $this->mapItem($item),
-                array_slice(array_values($items), 0, $this->getMaxResults()),
+                $this->ensureListOfArrays(
+                    array_slice(array_values($items), 0, $this->getMaxResults()),
+                    'Each AutocompleteInput search result must be an array',
+                ),
             );
         } catch (\Throwable $e) {
             return ['results' => [], 'error' => $e->getMessage()];
@@ -254,15 +286,15 @@ class AutocompleteInput extends Field
     protected function mapItem(array $item): array
     {
         $searchable = array_map(
-            fn (string $key) => mb_strtolower((string) ($item[$key] ?? '')),
+            fn (string $key): string => mb_strtolower($this->itemText($item, $key)),
             $this->getSearchKeys(),
         );
 
         return [
             'value' => $item[$this->getOptionValue()] ?? null,
-            'label' => (string) ($item[$this->getOptionLabel()] ?? ''),
+            'label' => $this->itemText($item, $this->getOptionLabel()),
             'html' => $this->renderItem($item),
-            'keys' => array_values($searchable),
+            'keys' => $searchable,
         ];
     }
 
@@ -274,7 +306,10 @@ class AutocompleteInput extends Field
         $itemView = $this->itemView;
 
         if ($itemView instanceof Closure) {
-            return (string) $this->evaluate($itemView, ['item' => $item]);
+            $html = $this->evaluate($itemView, ['item' => $item]) ?? '';
+
+            return $this->toText($html)
+                ?? throw $this->invalid('AutocompleteInput itemView() closure must return a string or Htmlable', $html);
         }
 
         if (is_string($itemView)) {
@@ -284,13 +319,82 @@ class AutocompleteInput extends Field
 
             return preg_replace_callback(
                 '/\{(\w+)\}/',
-                fn (array $m): string => e((string) ($item[$m[1]] ?? '')),
+                fn (array $m): string => e($this->itemText($item, $m[1])),
                 $itemView,
             ) ?? '';
         }
 
-        $label = $this->getOptionLabel();
+        return e($this->itemText($item, $this->getOptionLabel()));
+    }
 
-        return e((string) ($item[$label] ?? ''));
+    /**
+     * Read an option field as text; a missing or null field is an empty string.
+     *
+     * @param  array<array-key, mixed>  $item
+     */
+    protected function itemText(array $item, string $key): string
+    {
+        $value = $item[$key] ?? '';
+
+        return $this->toText($value)
+            ?? throw $this->invalid("AutocompleteInput option field [{$key}] must be a string", $value);
+    }
+
+    protected function evaluateString(string|Closure $value, string $setting): string
+    {
+        $result = $this->evaluate($value);
+
+        return $this->toText($result)
+            ?? throw $this->invalid("AutocompleteInput {$setting}() must resolve to a string", $result);
+    }
+
+    protected function evaluateInt(int|Closure $value, string $setting): int
+    {
+        $result = $this->evaluate($value);
+
+        if (is_int($result)) {
+            return $result;
+        }
+
+        $int = is_string($result) ? filter_var($result, FILTER_VALIDATE_INT) : false;
+
+        return $int !== false ? $int : throw $this->invalid("AutocompleteInput {$setting}() must resolve to an integer", $result);
+    }
+
+    /**
+     * Convert values PHP would accept as a string (scalars, Stringable, Htmlable); null for anything else.
+     */
+    protected function toText(mixed $value): ?string
+    {
+        return match (true) {
+            is_string($value) => $value,
+            $value instanceof Htmlable => $value->toHtml(),
+            is_int($value), is_float($value), is_bool($value) => (string) $value,
+            $value instanceof Stringable => (string) $value,
+            default => null,
+        };
+    }
+
+    /**
+     * @return list<array<array-key, mixed>>
+     */
+    protected function ensureListOfArrays(mixed $value, string $message): array
+    {
+        if (! is_array($value)) {
+            throw $this->invalid($message, $value);
+        }
+
+        $list = [];
+
+        foreach ($value as $item) {
+            $list[] = is_array($item) ? $item : throw $this->invalid($message, $item);
+        }
+
+        return $list;
+    }
+
+    protected function invalid(string $message, mixed $value): InvalidArgumentException
+    {
+        return new InvalidArgumentException("{$message}, ".get_debug_type($value).' given.');
     }
 }
