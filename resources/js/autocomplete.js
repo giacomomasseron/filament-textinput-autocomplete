@@ -1,3 +1,17 @@
+/**
+ * Alpine component behind the autocomplete text input.
+ *
+ * @param {Object} config
+ * @param {*} config.state Entangled Livewire state for the field.
+ * @param {string} config.componentKey Schema component key used to call the server-side `search` method.
+ * @param {boolean} config.serverSearch Fetch suggestions from the server instead of filtering `options`.
+ * @param {Array<{value: *, label: string, html: string, keys: string[]}>} [config.options] Static options; `keys` are lowercase search terms.
+ * @param {number} [config.minChars=1] Minimum query length before searching.
+ * @param {number} [config.debounceTime=300] Delay in milliseconds before a server search runs.
+ * @param {number} [config.maxResults=10] Maximum number of static results shown.
+ * @param {string} [config.noResultsMessage='No results found']
+ * @param {string} [config.loadingMessage='Loading...']
+ */
 export default function autocomplete(config) {
     return {
         // --- config ---
@@ -27,8 +41,16 @@ export default function autocomplete(config) {
             this.$watch('state', (value) => this.syncState(value));
         },
 
+        /**
+         * Reflect a state value (initial, external or form reset) into the visible input.
+         *
+         * Static options resolve the value to their label; anything else is shown as-is.
+         * The echo of the component's own change is ignored: the current selection, or
+         * an unchanged free-text edit, so typing is never swapped for an option label.
+         *
+         * @param {*} value The new state value.
+         */
         syncState(value) {
-            // Skip only the echo of our own change: the current selection, or an unchanged free-text edit.
             const unchanged = this.selected
                 ? value !== null && value !== undefined && String(value) === String(this.selected.value ?? this.selected.label)
                 : value === this.query;
@@ -51,6 +73,13 @@ export default function autocomplete(config) {
             this.search();
         },
 
+        /**
+         * Start a search for the current query.
+         *
+         * Cancels any queued or in-flight search and clears old suggestions first. Below
+         * `minChars` the dropdown closes; in server mode the fetch is debounced, otherwise
+         * the static options are filtered immediately.
+         */
         search() {
             clearTimeout(this.debounceTimer);
             this.requestId++;
