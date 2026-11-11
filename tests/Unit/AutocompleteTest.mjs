@@ -82,6 +82,41 @@ for (const [name, factory] of [['source', source], ['distribution', distribution
             assert.equal(component.state, 'es');
         });
 
+        it('resolves an external value that matches the displayed label of another option', () => {
+            const ambiguous = { value: 'a', label: 'b', html: 'b', keys: ['b'] };
+            const bee = { value: 'b', label: 'Bee', html: 'Bee', keys: ['bee'] };
+            const component = createComponent(factory, { options: [ambiguous, bee] });
+            component.select(ambiguous);
+
+            component.state = 'b';
+            component.stateChanged('b');
+
+            assert.equal(component.query, 'Bee');
+            assert.equal(component.selected, bee);
+        });
+
+        it('keeps a numeric server result label when its value is synchronized as a string', () => {
+            const answer = { value: 42, label: 'Answer', html: 'Answer', keys: ['answer'] };
+            const component = createComponent(factory, { serverSearch: true, options: [] });
+            component.select(answer);
+
+            component.state = '42';
+            component.stateChanged('42');
+
+            assert.equal(component.query, 'Answer');
+            assert.equal(component.selected, answer);
+        });
+
+        it('keeps typed free text that matches an option value as typed', () => {
+            const component = createComponent(factory);
+
+            component.onInput('es');
+            component.stateChanged('es');
+
+            assert.equal(component.query, 'es');
+            assert.equal(component.selected, null);
+        });
+
         it('ignores an old response while the newer search is still debouncing', async (t) => {
             t.mock.timers.enable({ apis: ['setTimeout'] });
             const response = deferred();
