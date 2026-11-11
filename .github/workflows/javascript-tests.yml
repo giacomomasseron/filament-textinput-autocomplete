@@ -1,0 +1,40 @@
+name: javascript-tests
+
+on:
+  push:
+    paths:
+      - 'resources/js/**'
+      - 'resources/views/**'
+      - 'dist/components/**'
+      - 'tests/Unit/*.mjs'
+      - 'package.json'
+      - 'bin/build.js'
+      - '.github/workflows/javascript-tests.yml'
+  pull_request:
+    paths:
+      - 'resources/js/**'
+      - 'resources/views/**'
+      - 'dist/components/**'
+      - 'tests/Unit/*.mjs'
+      - 'package.json'
+      - 'bin/build.js'
+      - '.github/workflows/javascript-tests.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '24'
+
+      - name: Test source and distributed components
+        run: npm test
