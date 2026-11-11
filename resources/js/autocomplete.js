@@ -28,7 +28,12 @@ export default function autocomplete(config) {
         },
 
         syncState(value) {
-            if (value === this.query || (this.selected && value === (this.selected.value ?? this.selected.label))) {
+            // Skip only the echo of our own change: the current selection, or an unchanged free-text edit.
+            const unchanged = this.selected
+                ? value !== null && value !== undefined && String(value) === String(this.selected.value ?? this.selected.label)
+                : value === this.query;
+
+            if (unchanged) {
                 return;
             }
 
